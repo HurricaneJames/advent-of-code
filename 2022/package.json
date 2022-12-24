@@ -1,0 +1,15 @@
+{
+  "name": "aoc2022",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "current": "ts-node d16.ts",
+    "d16": "NODE_OPTIONS='--max_old_space_size=24604' ts-node d16.ts"
+  },
+  "devDependencies": {
+    "@types/node": "^18.11.10",
+    "ts-node": "^10.9.1",
+    "tslib": "^2.4.1",
+    "typescript": "^4.9.3"
+  }
+}
