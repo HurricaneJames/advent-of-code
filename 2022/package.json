@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "current": "ts-node d16.ts",
+    "current": "ts-node d17.ts",
     "d16": "NODE_OPTIONS='--max_old_space_size=24604' ts-node d16.ts"
   },
   "devDependencies": {
