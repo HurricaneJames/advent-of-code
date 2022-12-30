@@ -19,6 +19,14 @@ interface State {
   rock: number;
   jet: number;
 }
+interface Cycle {
+  size: number,
+  value: string,
+}
+interface Window {
+  min: number,
+  max: number,
+}
 
 const CAVERN_WIDTH = 7;
 const EMPTY_ROWS_ABOVE_LAST_ROCK = 3;
@@ -51,11 +59,17 @@ const SHAPES: Array<Shape> = [
 }));
 
 function process() {
-  calc('Part 1 (sample)', processInput('sample'), 2022, 3068);
-  calc('Part 1', processInput(), 2022, 3102);
+  // TODO - These required hand tuning to find,
+  // future iteration should try to find the window automatically.
+  const sampleWindow: Window = {min: 50, max: 60};
+  const inputWindow: Window = {min: 2600, max: 2700};
+  calc('Part 1 (sample)', processInput('sample'), sampleWindow, 2022, 3068);
+  calc('Part 2 (sample)', processInput('sample'), sampleWindow, 1000000000000, 1514285714288);
+  calc('Part 1', processInput(), inputWindow, 2022, 3102);
+  calc('Part 2', processInput(), inputWindow, 1000000000000, 1539823008825);
 }
 
-function calc(description: string, jets: Jets, rocksToDrop: number, expected: number | null) {
+function calc(description: string, jets: Jets, cycleWindow: Window, rocksToDrop: number, expected: number | null) {
 
   const state: State = {
     cavern: [],
@@ -63,13 +77,35 @@ function calc(description: string, jets: Jets, rocksToDrop: number, expected: nu
     jet: 0,
   };
 
-  const SIGNATURE_LINES = 5;
+  let cycle: Cycle | null = null;
+  let rocksAtCycleFound = 0;
+  let heightAtLastCycle = -1;
+  let heightOfCycles = 0;
   for (let i = 0; i < rocksToDrop; i++) {
     addNewRock(state);
     simulateRockDrop(state, jets);
+
+    if (heightAtLastCycle > -1) continue;
+    let foundCycle: Cycle | null;
+    if ((foundCycle = findRepeatingWindow(cycleWindow, state, cycle)) != null) {
+      if (cycle == null) {
+        cycle = foundCycle;
+        rocksAtCycleFound = i;
+      } else {
+        heightAtLastCycle = getRockHeight(state);
+        const rocksPerCycle = i - rocksAtCycleFound;
+        const remainingRocks = rocksToDrop - i;
+        const remainingCyclesRaw = remainingRocks / rocksPerCycle;
+        const remainingCycles = Math.floor(remainingCyclesRaw);
+        const rocksInRemainingCycles = rocksPerCycle * remainingCycles;
+        heightOfCycles = remainingCycles * foundCycle.size;
+        const newI = i + rocksInRemainingCycles;
+        i = newI;
+      }
+    }
   }
 
-  const result = findTopRow(state);
+  const result = getRockHeight(state) + heightOfCycles;
   let resultMark = expected == null
     ? '❓'
     : ((result === expected)
@@ -86,8 +122,38 @@ function calc(description: string, jets: Jets, rocksToDrop: number, expected: nu
   );
 }
 
-function findTopRow(state: State): number {
-  return state.cavern.length - state.cavern.findIndex(row => !row.every(c => c === Cell.EMPTY));
+function findRepeatingWindow(cycleWindow: Window, state: State, previousCycle: Cycle | null): Cycle | null {
+  const minHeight = 50 + 3 * cycleWindow.max;
+  const rockHeight = getRockHeight(state);
+  if (rockHeight < minHeight) return null;
+
+  let minWindow = previousCycle?.size || cycleWindow.min;
+  let maxWindow = previousCycle?.size || cycleWindow.max;
+
+  const base = findTopRowIndex(state);
+  const { cavern } = state;
+
+  for (let window = minWindow; window <= maxWindow; window++) {
+    const left = cavern.slice(base, base + window).map(lineSignature).join(' ');
+    const middle = cavern.slice(base + window, base + 2 * window).map(lineSignature).join(' ');
+    const right = previousCycle != null ? previousCycle.value : cavern.slice(base + 2 * window, base + 3 * window).map(lineSignature).join(' ');
+    if (left === right && left === middle) {
+      return { size: window, value: left };
+    }
+  }
+  return null;
+}
+
+function lineSignature(line: Array<Cell>): number {
+  return line.reduce((sum, i, idx) => i === Cell.FIXED ? sum + Math.pow(2, idx) : sum, 0);
+}
+
+function getRockHeight(state: State): number {
+  return state.cavern.length - findTopRowIndex(state);
+}
+
+function findTopRowIndex(state: State): number {
+  return state.cavern.findIndex(row => !row.every(c => c === Cell.EMPTY))
 }
 
 function dump(state: State, showLines: boolean = false) {
