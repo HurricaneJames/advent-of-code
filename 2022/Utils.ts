@@ -10,3 +10,21 @@ function subMultiplex<T>(item: T, items: Array<Array<T>>): Array<Array<T>> {
   nextOptionSet.forEach(os => os.push(item));
   return nextOptionSet;
 }
+
+export function dumpResult<T>(description: string, result: T, expected: T | null) {
+  let resultMark = expected == null
+    ? '❓'
+    : ((result === expected)
+      ? '✅'
+      : '❌'
+    );
+
+  console.log(
+    '%s (%s): got %o / expected %o',
+    description,
+    resultMark,
+    result,
+    expected,
+  );
+
+}

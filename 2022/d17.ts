@@ -1,4 +1,5 @@
 import * as fs from 'fs';
+import { dumpResult } from './Utils';
 
 // '<' -> false,   '>' -> true
 type Jets = Array<boolean>;
@@ -106,20 +107,7 @@ function calc(description: string, jets: Jets, cycleWindow: Window, rocksToDrop:
   }
 
   const result = getRockHeight(state) + heightOfCycles;
-  let resultMark = expected == null
-    ? '❓'
-    : ((result === expected)
-      ? '✅'
-      : '❌'
-    );
-
-  console.log(
-    '%s (%s): got %d / expected %d',
-    description,
-    resultMark,
-    result,
-    expected,
-  );
+  dumpResult(description, result, expected);
 }
 
 function findRepeatingWindow(cycleWindow: Window, state: State, previousCycle: Cycle | null): Cycle | null {

@@ -7,7 +7,7 @@
 // ```
 
 import * as fs from 'fs';
-import { multiplex } from './Utils';
+import { dumpResult, multiplex } from './Utils';
 
 interface Input {
   nodes: NodeMap;
@@ -60,20 +60,7 @@ interface State {
     const memo: Table = (new Array(time + 1)).fill(undefined).map(_ => new Array(mapConstants.tableSize).fill(undefined));
 
     const result = calcBestValueForState(state, memo, nodes, mapConstants);
-
-    let resultMark = expected == null ? '❓' :
-      // ((result.value === expected) ? '✅' : '❌');
-      ((result === expected) ? '✅' : '❌');
-
-    console.log(
-      '%s (%s): got %d / expected %d',
-      description,
-      resultMark,
-      result,
-      expected,
-    );
-    // console.log('    Path: ', result.path);
-
+    dumpResult(description, result, expected);
   }
 
   function calcBestValueForState(
