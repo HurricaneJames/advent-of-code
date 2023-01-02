@@ -21,8 +21,8 @@ export function dumpResult<T>(description: string, result: T, expected: T | null
 
   console.log(
     '%s (%s): got %o / expected %o',
-    description,
     resultMark,
+    description,
     result,
     expected,
   );
