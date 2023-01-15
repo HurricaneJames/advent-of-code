@@ -3,7 +3,8 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "current": "ts-node d22.ts",
+    "current": "ts-node d23.ts",
+    "d23": "ts-node d23.ts",
     "d22": "ts-node d22.ts",
     "d21": "ts-node d21.ts",
     "d20": "ts-node d20.ts",

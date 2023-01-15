@@ -1,6 +1,4 @@
 import * as fs from 'fs';
-import { CursorPos } from 'readline';
-import { arrayBuffer } from 'stream/consumers';
 import { dumpResult, modulo } from './Utils';
 
 type Input = {

@@ -1,4 +1,14 @@
 
+type FnEvalsToBool<T> = (t: T, index: number, array: T[]) => boolean;
+export function findLastIndex<T>(arr: T[], lambda: FnEvalsToBool<T>): number {
+  let i = arr.length - 1;
+  while (i >= 0) {
+    if (lambda(arr[i], i, arr)) return i;
+    i--;
+  }
+  return -1;
+}
+
 // returns real modulo, not just the remainder (useful for circular indexing)
 export function modulo(a: number, b: number): number {
   return ((a % b) + b) % b;
@@ -16,13 +26,16 @@ function subMultiplex<T>(item: T, items: Array<Array<T>>): Array<Array<T>> {
   return nextOptionSet;
 }
 
+export function getResultMark<T>(result: T, expected: T | null): string {
+  return expected == null
+  ? '❓'
+  : ((result === expected)
+    ? '✅'
+    : '❌'
+  );
+}
 export function dumpResult<T>(description: string, result: T, expected: T | null) {
-  let resultMark = expected == null
-    ? '❓'
-    : ((result === expected)
-      ? '✅'
-      : '❌'
-    );
+  let resultMark = getResultMark(result, expected)
 
   console.log(
     '%s (%s): got %o / expected %o',
