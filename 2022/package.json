@@ -13,7 +13,22 @@
     "d19": "ts-node d19.ts",
     "d18": "ts-node d18.ts",
     "d17": "ts-node d17.ts",
-    "d16": "NODE_OPTIONS='--max_old_space_size=24604' ts-node d16.ts"
+    "d16": "NODE_OPTIONS='--max_old_space_size=24604' ts-node d16.ts",
+    "d15": "ts-node d15.ts",
+    "d14": "ts-node d14.ts",
+    "d13": "ts-node d13.ts",
+    "d12": "ts-node d12.ts",
+    "d11": "ts-node d11.ts",
+    "d10": "ts-node d10.ts",
+    "d09": "ts-node d09.ts",
+    "d08": "ts-node d08.ts",
+    "d07": "ts-node d07.ts",
+    "d06": "ts-node d06.ts",
+    "d05": "ts-node d05.ts",
+    "d04": "ts-node d04.ts",
+    "d03": "ts-node d03.ts",
+    "d02": "ts-node d02.ts",
+    "d01": "ts-node d01.ts"
   },
   "devDependencies": {
     "@types/node": "^18.11.10",

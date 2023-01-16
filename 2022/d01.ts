@@ -1,4 +1,4 @@
-import * as fs from 'fs';
+import { dumpResult, getInput } from './Utils';
 
 interface Elf {
   items: Array<number>,
@@ -7,9 +7,8 @@ interface Elf {
 
 (function process() {
   let maxCalories = 0;
-  const input = fs.readFileSync("./d01.input.txt");
   let i = 0;
-  const store = input.toString().split('\n').reduce((memo: Array<Elf>, val: string) => {
+  const store = getInput(__filename).split('\n').reduce((memo: Array<Elf>, val: string) => {
     if (val === "") {
       memo.push({items: [], total: 0});
     } else {
@@ -22,7 +21,9 @@ interface Elf {
     }
     return memo;
   }, [{items: [], total: 0}]);
-  console.log('Max Calories: ', maxCalories);
+  dumpResult("Part 1: Max Calories", maxCalories, 72017);
+  // console.log('Max Calories: ', maxCalories);
   const nbiggest = store.map((elf) => elf.total).sort().slice(-3);
-  console.log('Biggest 3: ', nbiggest.reduce((s, v) => s += v, 0));
+  const biggest3 = nbiggest.reduce((s, v) => s += v, 0);
+  dumpResult("Part 2: Biggest 3", biggest3, 212520);
 })()

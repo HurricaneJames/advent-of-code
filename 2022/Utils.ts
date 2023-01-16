@@ -1,3 +1,4 @@
+import * as fs from 'fs';
 
 type FnEvalsToBool<T> = (t: T, index: number, array: T[]) => boolean;
 export function findLastIndex<T>(arr: T[], lambda: FnEvalsToBool<T>): number {
@@ -24,6 +25,12 @@ function subMultiplex<T>(item: T, items: Array<Array<T>>): Array<Array<T>> {
   const nextOptionSet = items[0].flatMap(item => subMultiplex(item, items.slice(1)));
   nextOptionSet.forEach(os => os.push(item));
   return nextOptionSet;
+}
+
+export function getInput(filename: string, input: string = 'input'): string {
+  const scriptName = filename.match(/.*\/(?<scriptName>d\d\d).ts$/)?.groups?.scriptName;
+  if (scriptName == null) throw new Error("Unable to find script name for " + filename);
+  return fs.readFileSync(`./input/${scriptName}.${input}.txt`).toString();
 }
 
 export function getResultMark<T>(result: T, expected: T | null): string {

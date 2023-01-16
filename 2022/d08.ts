@@ -1,7 +1,7 @@
-import * as fs from 'fs';
+import { dumpResult, getInput } from "./Utils";
 
 (function process() {
-  const input = fs.readFileSync("./d08.input.txt").toString();
+  const input = getInput(__filename);
   const trees = input.split('\n').reduce((grid: Array<Array<number>>, val: string) => {
     grid.push(val.split('').map(i => parseInt(i, 10)));
     return grid;
@@ -23,8 +23,8 @@ import * as fs from 'fs';
       }
     }
   }
-  console.log("Visible: ", visible + 2 * trees.length + 2 * (trees[0].length - 2));
-  console.log("Max Visibility Score: ", visScores[maxVj][maxVi]);
+  dumpResult("Part 1: Visible", visible + 2 * trees.length + 2 * (trees[0].length - 2), 1816);
+  dumpResult("Part 2: Max Vis", visScores[maxVj][maxVi], 383520);
 })();
 
 function calcVisScore(trees: Array<Array<number>>, i: number, j: number): number {

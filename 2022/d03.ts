@@ -1,4 +1,4 @@
-import * as fs from 'fs';
+import { dumpResult, getInput } from './Utils';
 
 const values = [
   '',
@@ -7,22 +7,22 @@ const values = [
 ];
 
 (function process() {
-  const input = fs.readFileSync("./d03.input.txt").toString();
-  findSharedItems(input);
-  findElfBadges(input);
+  findSharedItems(getInput(__filename));
+  findElfBadges(getInput(__filename));
 })()
 
 function findElfBadges(input: string) {
   const sacks = input.split('\n').map(sack => new Set(sack));
   const teamBadges = [];
-  for (let i=0; i < sacks.length; i+=3) {
-    const x = intersection(intersection(sacks[i], sacks[i+1]), sacks[i+2]);
+  for (let i = 0; i < sacks.length; i += 3) {
+    const x = intersection(intersection(sacks[i], sacks[i + 1]), sacks[i + 2]);
     if (x.size !== 1) {
       throw new Error('invalid input');
     }
     teamBadges.push([...x][0]);
   }
-  console.log('badges: ', teamBadges.reduce((sum, i) => sum += values.indexOf(i), 0));
+  const badges = teamBadges.reduce((sum, i) => sum += values.indexOf(i), 0);
+  dumpResult("Part 2: Badges", badges, 2609);
 }
 
 function findSharedItems(input: string) {
@@ -31,8 +31,8 @@ function findSharedItems(input: string) {
     memo.push(sharedItem);
     return memo;
   }, []);
-  console.log('sharedItems: ', sharedItems.reduce((sum, i) => sum += values.indexOf(i), 0));
-
+  const result = sharedItems.reduce((sum, i) => sum += values.indexOf(i), 0);
+  dumpResult("Part 1: Shared Items", result, 7727);
 }
 
 function findSharedItem(sackContents: string) {

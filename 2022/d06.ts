@@ -1,21 +1,24 @@
-import * as fs from 'fs';
+import { dumpResult, getInput } from "./Utils";
 
-// start of packet length
-// const SUBSTRING_LENGTH = 4;
-// start of message
-const SUBSTRING_LENGTH = 14;
-(function process() {
-  const buffer = fs.readFileSync("./d06.input.txt").toString();
-  console.log('processing', buffer);
-  for (let i = 0; i < buffer.length - SUBSTRING_LENGTH; i++) {
-    if (isUniqueSubstring(buffer, i)) {
-      console.log('Data Start: ', i + SUBSTRING_LENGTH);
-      return;
+function findSubstring(buffer: string, length: number): number {
+  for (let i = 0; i < buffer.length - length; i++) {
+    if (isUniqueSubstring(buffer, i, length)) {
+      // console.log('Data Start: ', i + SUBSTRING_LENGTH);
+      return i + length;
     }
   }
-})()
-
-function isUniqueSubstring(buffer: string, start: number) {
-  const substr = buffer.slice(start, start + SUBSTRING_LENGTH);
-  return (new Set(substr.split(''))).size === SUBSTRING_LENGTH;
+  throw new Error("Cound not find substring of length: " + length);
 }
+
+function isUniqueSubstring(buffer: string, start: number, length: number) {
+  const substr = buffer.slice(start, start + length);
+  return (new Set(substr.split(''))).size === length;
+}
+
+function process() {
+  const buffer = getInput(__filename);
+  dumpResult("Part 1 (start of packet)", findSubstring(buffer, 4), 1892);
+  dumpResult("Part 2 (start of message)", findSubstring(buffer, 14), 2313);
+}
+
+process();

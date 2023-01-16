@@ -1,4 +1,4 @@
-import * as fs from 'fs';
+import { dumpResult, getInput } from "./Utils";
 
 interface Noop {
   instr: 'noop',
@@ -19,7 +19,7 @@ const SCREEN_ROWS = 6;
 const SCREEN_COLS = 40;
 
 (function process() {
-  const input = fs.readFileSync("./d10.input.txt").toString();
+  const input = getInput(__filename);
 
   const instructions = input.split('\n').map(line => {
     const [instr, value] = line.split(' ');
@@ -28,6 +28,8 @@ const SCREEN_COLS = 40;
         return { instr };
       case 'addx':
         return { instr, param: parseInt(value, 10) };
+      default:
+        throw new Error("Unknown instruction: " + instr);
     }
   });
 
@@ -38,13 +40,13 @@ const SCREEN_COLS = 40;
   let delay = 0;
   let valueOnDelay = 0;
 
-  for (let clock=1; clock <= MAX_CLOCK; clock++) {
+  for (let clock = 1; clock <= MAX_CLOCK; clock++) {
     if ((clock - SAMPLE_BASE) % SAMPLE_RATE === 0) {
       samples.push(clock * register);
     }
 
     const col = (clock % SCREEN_COLS) - 1;
-    if (col >= register -1 && col <= register + 1) {
+    if (col >= register - 1 && col <= register + 1) {
       const row = Math.floor(clock / SCREEN_COLS);
       screen[row][col] = '#'
     }
@@ -68,7 +70,17 @@ const SCREEN_COLS = 40;
     }
   }
 
-  console.log('signalSum: ', samples.reduce((sum, sample) => sum += sample, 0));
-  // console.log('samples  : ', samples);
-  console.log(screen.map(row => row.join('')).join('\n'));
+  dumpResult("Part 1 - Signal Sum", samples.reduce((sum, sample) => sum += sample, 0), 12640);
+
+  const expectedMessage = [
+    '',
+    '####.#..#.###..####.#....###....##.###..',
+    '#....#..#.#..#....#.#....#..#....#.#..#.',
+    '###..####.###....#..#....#..#....#.#..#.',
+    '#....#..#.#..#..#...#....###.....#.###..',
+    '#....#..#.#..#.#....#....#.#..#..#.#.#..',
+    '####.#..#.###..####.####.#..#..##..#..#.',
+  ].join('\n');
+  const result = '\n' + screen.map(row => row.join('')).join('\n');
+  dumpResult("Part 2 - Expected", result, expectedMessage);
 })();

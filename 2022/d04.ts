@@ -1,4 +1,4 @@
-import * as fs from 'fs';
+import { dumpResult, getInput } from "./Utils";
 
 interface Pair {
   l: number,
@@ -6,8 +6,7 @@ interface Pair {
 }
 
 (function process() {
-  const input = fs.readFileSync("./d04.input.txt");
-  const pairs = input.toString().split('\n').reduce((memo: Array<Array<Pair>>, val: string) => {
+  const pairs = getInput(__filename).toString().split('\n').reduce((memo: Array<Array<Pair>>, val: string) => {
     memo.push(
       val.split(',').map(pair => {
         const p = pair.split('-');
@@ -37,6 +36,6 @@ interface Pair {
     }
     return memo;
   }, []);
-  // console.log("Overlaps: ", completeOverlaps.length, completeOverlaps);
-  console.log("Partials: ", partialOverlaps.length, partialOverlaps);
-})()
+  dumpResult("Part 1: Overlaps", completeOverlaps.length, 580);
+  dumpResult("Part 2: Partials", partialOverlaps.length, 895);
+})();

@@ -1,4 +1,4 @@
-import * as fs from 'fs';
+import { dumpResult, getInput } from "./Utils";
 
 interface Point {
   x: number;
@@ -13,8 +13,12 @@ interface State {
 }
 
 (function process() {
-  const input = fs.readFileSync("./d09.input.txt").toString();
+  const input = getInput(__filename);
+  dumpResult("Part 1", getTailPositions(input, 2), 6175);
+  dumpResult("Part 2", getTailPositions(input, 10), 2578);
+})();
 
+function getTailPositions(input: string, knots: number): number {
   const state = input.split('\n').reduce((state: State, val: string) => {
     const [direction, countToken] = val.split(' ');
     const count = parseInt(countToken, 10);
@@ -50,15 +54,13 @@ interface State {
     // dumpKnots(state);
     return state;
   }, {
-    knots: initKnots(10),
+    knots: initKnots(knots),
     tailPositions: new Set<string>(),
     max: { x: 0, y: 0 },
     min: { x: 0, y: 0 },
   });
-
-  console.log("Tail Chart: ", state.tailPositions.size)
-  dumpTailChart(state);
-})();
+  return state.tailPositions.size;
+}
 
 function initKnots(count: number): Array<Point> {
   return (new Array(count)).fill(undefined).map(_ => ({ x: 0, y: 0 }));

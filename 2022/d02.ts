@@ -1,4 +1,4 @@
-import * as fs from 'fs';
+import { dumpResult, getInput } from "./Utils";
 
 const lose = 0;
 const draw = 3;
@@ -14,14 +14,14 @@ const shapeValue = {
 
 
 (function process() {
-  const input = fs.readFileSync("./d02.input.txt");
-  const score = input.toString().split('\n').reduce((score: [number, number], val: string) => {
+  const score = getInput(__filename).split('\n').reduce((score: [number, number], val: string) => {
     const [op, me] = val.split(' ');
     score[0] += scoreRound(op, me);
     score[1] += scoreByStrategy(op, me);
     return score;
   }, [0, 0]);
-  console.log('My Score: ', score);
+  dumpResult("Part 1", score[0], 12535);
+  dumpResult("Part 2", score[1], 15457);
 })()
 
 function scoreRound(opponent: string, me: string): number {

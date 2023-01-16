@@ -1,4 +1,4 @@
-import * as fs from 'fs';
+import { dumpResult, getInput } from "./Utils";
 
 interface FsNode {
   name: string,
@@ -25,7 +25,7 @@ const MIN_UNUSED_SPACE = 30000000;
     type: 'dir',
     children: [],
   };
-  const input = fs.readFileSync("./d07.input.txt").toString();
+  const input = getInput(__filename);
   const shellState = input.split('\n').reduce((state: ShellState, val: string) => {
     const tokens = val.split(' ');
     if (tokens[0] === '$') {
@@ -41,7 +41,8 @@ const MIN_UNUSED_SPACE = 30000000;
   }, { fileSystem: rootNode, activeDirectory: rootNode });
   calculateSizes(rootNode);
 
-  console.log('SumOfMax100k', findAllDirectories(shellState.fileSystem, 100000).reduce((sum, d) => sum + d.size, 0));
+  const sumOfMax100k = findAllDirectories(shellState.fileSystem, 100000).reduce((sum, d) => sum + d.size, 0);
+  dumpResult("Part 1: (sum of max 100k)", sumOfMax100k, 1307902)
 
   const requiredSpace = MIN_UNUSED_SPACE - (TOTAL_DISK_SPACE - shellState.fileSystem.size);
   if (requiredSpace <= 0) {
@@ -50,7 +51,7 @@ const MIN_UNUSED_SPACE = 30000000;
   }
 
   const smallestDirThatIsBigEnough = findSmallestDirectoryAboveMinSize(shellState.fileSystem, requiredSpace);
-  console.log("Directory: ", smallestDirThatIsBigEnough?.size);
+  dumpResult("Part 2: (directory)", smallestDirThatIsBigEnough?.size, 7068748);
 })()
 
 function findAllDirectories(node: FsNode, maxSize: number) {

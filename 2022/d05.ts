@@ -1,4 +1,4 @@
-import * as fs from 'fs';
+import { dumpResult, getInput } from "./Utils";
 
 interface Move {
   count: number,
@@ -11,14 +11,54 @@ interface StackMoves {
   moves: Array<Move>,
 }
 
-(function process() {
+function process() {
+  dumpResult("Part 1", executeMoves(parseInput()), 'TWSGQHNHL');
+  dumpResult("Part 2", executeMoves2(parseInput()), 'JNRSCDWPP');
+}
+
+function initStack(memo: StackMoves, tokens: Array<String>) {
+  const stackCount = (tokens.length - 1) / 4;
+  for (let i = 0; i < stackCount; i++) {
+    memo.stack.push([])
+  }
+}
+
+function executeMoves(memo: StackMoves): string {
+  for (let i=0; i < memo.moves.length; i++) {
+    const {count, from, to} = memo.moves[i];
+    for (let j=0; j<count; j++) {
+      let item = memo.stack[from].pop();
+      if (item == null) throw new Error('no crate to move: ' + memo.moves[i]);
+      try {
+        memo.stack[to].push(item);
+      } catch (e) {
+        console.log("Caught: ", e);
+        console.log("Move: ", i, memo.moves[i]);
+        console.log("Current Stack: ", memo.stack);
+        throw e;
+      }
+    }
+  }
+  return memo.stack.map(i => i[i.length - 1]).join('');
+}
+
+function executeMoves2(memo: StackMoves): string {
+  for (let i=0; i < memo.moves.length; i++) {
+    const {count, from, to} = memo.moves[i];
+    const crates = memo.stack[from].splice(-count);
+    memo.stack[to].push(...crates);
+  }
+  return memo.stack.map(i => i[i.length - 1]).join('');
+}
+
+function parseInput(): StackMoves {
   const MODEL_MODE = 0;
   const STACK_MOVE_SEPERATION_MODE = 1;
   const MOVE_MODE = 2;
 
-  const input = fs.readFileSync("./d05.input.txt");
   let mode = MODEL_MODE;
-  const result = input.toString().split('\n').reduce((memo: StackMoves, val: string) => {
+
+  return getInput(__filename).split('\n').reduce((memo: StackMoves, val: string) => {
     switch (mode) {
       case MODEL_MODE: {
         const tokens = val.split('');
@@ -63,40 +103,6 @@ interface StackMoves {
     stack: [],
     moves: [],
   });
-  executeMoves2(result);
-  // execute moves on stack
-  console.log('Result: ', result.stack.map(i => i[i.length - 1]).join(''));
-})();
-
-function initStack(memo: StackMoves, tokens: Array<String>) {
-  const stackCount = (tokens.length - 1) / 4;
-  for (let i = 0; i < stackCount; i++) {
-    memo.stack.push([])
-  }
 }
 
-function executeMoves(memo: StackMoves) {
-  for (let i=0; i < memo.moves.length; i++) {
-    const {count, from, to} = memo.moves[i];
-    for (let j=0; j<count; j++) {
-      let item = memo.stack[from].pop();
-      if (item == null) throw new Error('no crate to move: ' + memo.moves[i]);
-      try {
-        memo.stack[to].push(item);
-      } catch (e) {
-        console.log("Caught: ", e);
-        console.log("Move: ", i, memo.moves[i]);
-        console.log("Current Stack: ", memo.stack);
-        throw e;
-      }
-    }
-  }
-}
-
-function executeMoves2(memo: StackMoves) {
-  for (let i=0; i < memo.moves.length; i++) {
-    const {count, from, to} = memo.moves[i];
-    const crates = memo.stack[from].splice(-count);
-    memo.stack[to].push(...crates);
-  }
-}
+process();
