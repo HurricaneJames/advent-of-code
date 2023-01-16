@@ -6,8 +6,7 @@
 // pnpm run d16
 // ```
 
-import * as fs from 'fs';
-import { dumpResult, multiplex } from './Utils';
+import { dumpResult, getInput, multiplex } from './Utils';
 
 interface Input {
   nodes: NodeMap;
@@ -235,7 +234,7 @@ interface State {
 
     let nodes: NodeMap = {}
     let startNode = 'AA';
-    fs.readFileSync(`./d16.${name}.txt`).toString().split('\n').forEach((line, idx) => {
+    getInput(__filename, name).toString().split('\n').forEach((line, idx) => {
       const tokens = line.match(parseRegex);
       if (tokens == null) throw new Error("Unexpected input: " + line);
       const valve = tokens[1];

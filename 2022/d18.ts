@@ -1,5 +1,4 @@
-import * as fs from 'fs';
-import { dumpResult } from './Utils';
+import { dumpResult, getInput } from './Utils';
 
 type Input = { blob: Blob, cubes: Point3[] };
 enum Cell {
@@ -71,7 +70,7 @@ function countExposedSides(cubes: Blob, point: Point3, exposedTo: Cell) {
 }
 
 function processInput(name: string = 'input'): Input {
-  const cubes = fs.readFileSync(`./d18.${name}.txt`).toString()
+  const cubes = getInput(__filename, name)
     .split('\n')
     .map(cube => (cube.split(',').reduce(
       (cube, n, idx) => {

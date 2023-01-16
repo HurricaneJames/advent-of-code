@@ -1,6 +1,4 @@
-import * as fs from 'fs';
-
-const TOTAL_ROUNDS = 10000;
+import { dumpResult, getInput } from "./Utils";
 
 interface Monkey {
   id: number;
@@ -12,9 +10,8 @@ interface Monkey {
   onFalse: number;
 }
 
-(function process() {
-  const input = fs.readFileSync("./d11.input.txt").toString();
-  const monkeys = input.split('\n').reduce((monkeys: Array<Monkey>, line, idx) => {
+function parseInput(): Monkey[] {
+  return getInput(__filename).split('\n').reduce((monkeys: Array<Monkey>, line, idx) => {
     if (line === '') return monkeys;
     const tokens = line.split(':');
     if (tokens[0].startsWith('Monkey')) {
@@ -53,17 +50,27 @@ interface Monkey {
     }
     return monkeys;
   }, []);
+}
+
+function calc(
+  description: string,
+  expected: number | null,
+  rounds: number,
+  worryReduction: number,
+) {
+  const monkeys = parseInput();
 
   // at this point, worry level becomes a cycle based on the monkey test divisions
   const manageableWorryLevel = monkeys.reduce((lvl, monkey) => leastCommonMultiple(lvl, monkey.test), 1);
 
-  for (let i = 0; i < TOTAL_ROUNDS; i++) {
+  for (let i = 0; i < rounds; i++) {
     for (let monkeyId = 0; monkeyId < monkeys.length; monkeyId++) {
       const monkey = monkeys[monkeyId];
       for (let itemId = 0; itemId < monkey.items.length; itemId++) {
         const item = monkey.items[itemId];
-        // const newWorry = Math.floor(processOperation(monkey.operation, item) / 3);
-        const newWorry = processOperation(monkey.operation, item) % manageableWorryLevel;
+        const newWorry = (worryReduction > 0)
+          ? Math.floor(processOperation(monkey.operation, item) / 3)
+          : processOperation(monkey.operation, item) % manageableWorryLevel;
         const nextMonkey = (newWorry % monkey.test === 0) ? monkey.onTrue : monkey.onFalse;
         monkeys[nextMonkey].items.push(newWorry);
         monkey.inspections++;
@@ -73,8 +80,9 @@ interface Monkey {
   }
 
   // console.log('Monkeys: ', monkeys);
-  console.log('MonkeyBusiness: ', getMonkeyBusinessLevel(monkeys));
-})();
+  // console.log('MonkeyBusiness: ', getMonkeyBusinessLevel(monkeys));
+  dumpResult(description, getMonkeyBusinessLevel(monkeys), expected);
+}
 
 function processOperation(operation: Array<string>, old: number) {
   const ops = operation.map(oper => {
@@ -112,10 +120,17 @@ function getMonkeyBusinessLevel(monkeys: Array<Monkey>) {
       }
     }
   }
-  console.log("Top Inspectors: ", topInspectors);
+  // console.log("Top Inspectors: ", topInspectors);
   const mbl = topInspectors.reduce((sum, inspector) => sum * monkeys[inspector].inspections, 1);
   return mbl;
 }
 
 function greatestCommonDivisor(a: number, b: number): number { return (a ? greatestCommonDivisor(b % a, a) : b); }
 function leastCommonMultiple(a: number, b: number) { return ((a * b) / greatestCommonDivisor(a, b)); }
+
+function process() {
+  calc("Part 1", 66802, 20, 3);
+  calc("Part 2", 21800916620, 10000, 0);
+}
+
+process();

@@ -1,5 +1,4 @@
-import * as fs from 'fs';
-import { dumpResult } from './Utils';
+import { dumpResult, getInput } from './Utils';
 
 type Input = string[];
 
@@ -60,9 +59,7 @@ function decimalToSnafu(num: number): string {
 }
 
 function processInput(name: string = 'input'): Input {
-  return fs.readFileSync(`./d25.${name}.txt`)
-    .toString()
-    .split('\n');
+  return getInput(__filename, name).split('\n');
 }
 
 function process() {

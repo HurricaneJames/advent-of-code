@@ -1,5 +1,4 @@
-import * as fs from 'fs';
-import { dumpResult, modulo } from './Utils';
+import { dumpResult, getInput, modulo } from './Utils';
 
 type Point2 = { x: number, y: number }
 export enum Direction {
@@ -150,8 +149,7 @@ function getInitialState({ map, start }: Input): State {
 }
 
 function processInput(name: string = 'input'): Input {
-  const map = fs.readFileSync(`./d24.${name}.txt`)
-    .toString()
+  const map = getInput(__filename, name)
     .split('\n')
     .map(line => line.split('').map(t => {
       if (t === '#' || t === '.' || isBlizzard(t)) return t;

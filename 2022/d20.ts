@@ -1,5 +1,4 @@
-import * as fs from 'fs';
-import { dumpResult } from './Utils';
+import { dumpResult, getInput } from './Utils';
 
 type Input = number[];
 
@@ -41,7 +40,7 @@ function calc(description: string, data: Input, decryptionKey: number, iteration
 }
 
 function processInput(name: string = 'input'): Input {
-  return fs.readFileSync(`./d20.${name}.txt`).toString()
+  return getInput(__filename, name)
     .split('\n')
     .map(n => parseInt(n, 10));
 }

@@ -1,5 +1,4 @@
-import * as fs from 'fs';
-import { dumpResult, modulo } from './Utils';
+import { dumpResult, getInput, modulo } from './Utils';
 
 type Input = {
   map: Tile[][][],
@@ -637,7 +636,7 @@ function processInput(name: string = 'input'): Input {
     : { sideLength: 50, layout: INPUT_CUBE_LAYOUT };
   const tiles: Tile[][][] = new Array(7).fill(undefined).map(_ => []);
   let instructions: Instruction[] = [];
-  fs.readFileSync(`./d22.${name}.txt`).toString().split('\n').forEach((line, lineIdx) => {
+  getInput(__filename, name).split('\n').forEach((line, lineIdx) => {
     if (line === '') return;
     if (isTile(line.slice(0, 1))) {
       // process tile line

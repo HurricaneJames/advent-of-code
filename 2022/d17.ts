@@ -1,5 +1,4 @@
-import * as fs from 'fs';
-import { dumpResult } from './Utils';
+import { dumpResult, getInput } from './Utils';
 
 // '<' -> false,   '>' -> true
 type Jets = Array<boolean>;
@@ -268,7 +267,7 @@ function addNewRock(state: State): State {
 }
 
 function processInput(name: string = 'input'): Jets {
-  return fs.readFileSync(`./d17.${name}.txt`).toString().split('').map(t => t === '>');
+  return getInput(__filename, name).toString().split('').map(t => t === '>');
 }
 
 process();

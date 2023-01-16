@@ -1,4 +1,4 @@
-import * as fs from 'fs';
+import { dumpResult, getInput } from "./Utils";
 
 type PacketValue = number | Array<PacketValue>;
 
@@ -15,24 +15,22 @@ type CompareResult = -1 | 0 | 1;
 
 function calcPartA(packets: Array<PacketValue>) {
   let sum = 0;
-  for (let i=0; i<packets.length; i += 2) {
-    const pairIdx = i/2 + 1;
-    const result = comparePacketData(packets[i], packets[i+1]);
-    console.log("Pair: ", pairIdx, packets[i], packets[i+1], result);
+  for (let i = 0; i < packets.length; i += 2) {
+    const pairIdx = i / 2 + 1;
+    const result = comparePacketData(packets[i], packets[i + 1]);
     if (result === CORRECT_ORDER) sum += pairIdx;
   }
-  console.log('Sum of Indicies: ', sum);
+  dumpResult("Part1 - sum of indicies", sum, 5588);
 }
 
 function calcPartB(packets: Array<PacketValue>) {
   const dividers = [[[2]], [[6]]];
   const sorted = packets.concat(dividers).sort(comparePacketData).reverse();
   const decoder = sorted.reduce((decoder: number, packet, idx) => {
-    if (packet === dividers[0] || packet === dividers[1]) {console.log('ping: ', idx + 1); decoder *= idx + 1;}
+    if (packet === dividers[0] || packet === dividers[1]) { decoder *= idx + 1; }
     return decoder
   }, 1)
-  console.log('sorted: ', sorted);
-  console.log('decoder: ', decoder);
+  dumpResult("Part2 - decoder key", decoder, 23958);
 }
 
 function comparePacketData(left: PacketValue, right: PacketValue): CompareResult {
@@ -66,7 +64,7 @@ function comparePacketData(left: PacketValue, right: PacketValue): CompareResult
 }
 
 function processInput() {
-  const packets = fs.readFileSync("./d13.input.txt").toString().split('\n').reduce((packets: Array<PacketValue>, line) => {
+  const packets = getInput(__filename).split('\n').reduce((packets: Array<PacketValue>, line) => {
     if (line !== '') packets.push(JSON.parse(line));
     return packets;
   }, []);

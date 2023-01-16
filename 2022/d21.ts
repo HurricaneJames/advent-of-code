@@ -1,5 +1,4 @@
-import * as fs from 'fs';
-import { dumpResult } from './Utils';
+import { dumpResult, getInput } from './Utils';
 
 type Input = MonkeyMap;
 type MonkeyMap = { [id: string]: Node }
@@ -106,7 +105,7 @@ function isOperationNode(node: Node): node is OperationNode {
 
 const OPERATIONS = [Operation.PLUS, Operation.MINUS, Operation.MULTIPLY, Operation.DIVIDE];
 function processInput(name: string = 'input'): Input {
-  const monkeys: MonkeyMap = fs.readFileSync(`./d21.${name}.txt`).toString()
+  const monkeys: MonkeyMap = getInput(__filename, name)
     .split('\n')
     .reduce((monkeys: MonkeyMap, line) => {
       const [name, valueOrOperation] = line.split(':');

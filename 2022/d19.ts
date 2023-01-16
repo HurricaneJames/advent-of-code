@@ -1,5 +1,4 @@
-import * as fs from 'fs';
-import { dumpResult } from './Utils';
+import { dumpResult, getInput } from './Utils';
 
 // TODO - add optimization to calculate the max number of each robot type to bother
 // checking for (that optimization is more general than greedy-geode)
@@ -193,7 +192,7 @@ function gatherResources(state: State) {
 }
 
 function processInput(name: string = 'input'): Input {
-  const blueprints = fs.readFileSync(`./d19.${name}.txt`).toString().split('\n').reduce(
+  const blueprints = getInput(__filename, name).split('\n').reduce(
     (blueprints: Blueprint[], blueprint) => {
       const regex = /[^:]*:[^\d]*(?<ore>\d*)[^\d]*(?<clay>\d*)[^\d]*(?<obsidianOre>\d*)[^\d]*(?<obsidianClay>\d*)[^\d]*(?<geodeOre>\d*)[^\d]*(?<geodeObsidian>\d*).*$/;
       const tokens = blueprint.match(regex);

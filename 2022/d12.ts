@@ -1,4 +1,4 @@
-import * as fs from 'fs';
+import { dumpResult, getInput } from "./Utils";
 
 const ALPHA = 'abcdefghijklmnopqrstuvwxyz';
 
@@ -15,8 +15,8 @@ interface Node {
 (function process() {
   const { start, end, map } = processInput();
 
-  console.log("Steps to goal: ", search(map, start, end));
-  console.log('Steps to reverse goal: ', search2(map, end, 0));
+  dumpResult("Part 1 - steps to goal", search(map, start, end), 350);
+  dumpResult("Part 2 - steps to reverse goal", search2(map, end, 0), 349);
 })();
 
 
@@ -85,7 +85,7 @@ function adjacentEdges(map: Array<Array<number>>, p: Point, direction: number): 
 }
 
 function processInput() {
-  const input = fs.readFileSync("./d12.input.txt").toString();
+  const input = getInput(__filename);
   const start = { row: 0, col: 0 };
   const end = { row: 0, col: 0 };
   const map = input.split('\n').reduce((map: Array<Array<number>>, line, rowIdx) => {

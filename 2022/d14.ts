@@ -1,4 +1,4 @@
-import * as fs from 'fs';
+import { dumpResult, getInput } from "./Utils";
 
 interface Point {
   x: number,
@@ -60,7 +60,7 @@ function calcPartA({ data, window }: State) {
     // outputState(state, window);
   }
   // outputState(state, window);
-  console.log('Total Sand: ', totalSand);
+  dumpResult("Part 1 - total sand", totalSand, 858);
 }
 
 function calcPartB(state: State) {
@@ -107,8 +107,8 @@ function calcPartB(state: State) {
     data[particleY][particleX] = SAND;
     // outputState(data, window);
   }
-  outputState(data, window);
-  console.log('Total Sand: ', totalSand);
+  // outputState(data, window);
+  dumpResult("Part 2 - total sand", totalSand, 26845);
 }
 
 function addPrefixColumn(state: State) {
@@ -154,7 +154,7 @@ function generateState(lines: Array<Array<Point>>, window: Window): State {
 function processInput() {
   let minX = 500, maxX = 500;
   let maxY = 0;
-  const lines = fs.readFileSync("./d14.input.txt").toString().split('\n').reduce((scan: Array<Array<Point>>, line) => {
+  const lines = getInput(__filename).split('\n').reduce((scan: Array<Array<Point>>, line) => {
     const points = line.split(' -> ').map(p => {
       const [x, y] = p.split(',').map(i => parseInt(i, 10));
       if (x < minX) minX = x;

@@ -1,4 +1,4 @@
-import * as fs from 'fs';
+import { dumpResult, getInput } from "./Utils";
 
 interface Point {
   x: number,
@@ -49,15 +49,14 @@ function calcPartB(state: State) {
     }
   }
 
-  console.log('Possible Locations: ', possibleLocations);
-  console.log('Frequency: ', possibleLocations[0].x * 4000000 + possibleLocations[0].y)
+  const frequency = possibleLocations[0].x * 4000000 + possibleLocations[0].y;
+  dumpResult("Part 2 - frequency", frequency, 11756174628223);
 }
 
 function calcPartA(state: State) {
   const y = 2000000;
   const window = findHorizontalWindow(state);
   let sum = 0;
-  console.log('window: ', window);
   const win = new Array(window.max - window.min)
     .fill(undefined)
     .map((_, idx) =>
@@ -66,7 +65,7 @@ function calcPartA(state: State) {
   for (let x = window.min; x < window.max; x++) {
     if (!canSquareContainBeacon(state, { x, y })) { sum++; }
   }
-  console.log("On Line %d: %d", y, sum);
+  dumpResult("Part 1 - y = 2000000", sum, 5525990);
 }
 
 function canSquareContainBeacon(state: State, point: Point): boolean {
@@ -112,7 +111,7 @@ function distanceBetween(a: Point, b: Point) {
 }
 
 function processInput(): State {
-  const pairs = fs.readFileSync("./d15.input.txt").toString().split('\n').reduce((pairs: Array<SensorBeaconPair>, line) => {
+  const pairs = getInput(__filename).split('\n').reduce((pairs: Array<SensorBeaconPair>, line) => {
     const [left, right] = line.split(':')
     const sensorTokens = left.split(' ');
     const beaconTokens = right.split(' ');

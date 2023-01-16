@@ -1,5 +1,4 @@
-import * as fs from 'fs';
-import { dumpResult, findLastIndex, getResultMark } from './Utils';
+import { dumpResult, findLastIndex, getInput, getResultMark } from './Utils';
 import {getExpectedSampleStates} from './d23.sample.expect';
 
 type Input = {
@@ -227,7 +226,7 @@ function findDirection(state: State, from: Point2): Direction {
 
 
 function processInput(name: string = 'input'): Input {
-  const positions = fs.readFileSync(`./d23.${name}.txt`).toString().split('\n').map(line => line.split('').filter(isTile));
+  const positions = getInput(__filename, name).split('\n').map(line => line.split('').filter(isTile));
   return { positions };
 }
 
